@@ -1,0 +1,8 @@
+aws_region   = "us-east-1"
+project_name = "voice-insights"
+environment  = "dev"
+owner_tag    = "your-name"
+
+# Create these via scripts/create-bda-project.sh first, then paste ARNs here.
+bda_project_arn = "arn:aws:bedrock:us-east-1:111122223333:data-automation-project/REPLACE_ME"
+bda_profile_arn = "arn:aws:bedrock:us-east-1:111122223333:data-automation-profile/us.data-automation-v1"

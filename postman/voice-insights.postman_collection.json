@@ -1,0 +1,174 @@
+{
+  "info": {
+    "name": "Voice Insights on Bedrock",
+    "_postman_id": "vi-bedrock-collection-2026-05-24",
+    "description": "Test the transcript retrieval API for the voice-insights-bedrock pipeline.\n\n**Setup**\n1. Import this collection AND the matching environment file (`voice-insights.postman_environment.json`).\n2. Select the environment in the top-right.\n3. Pick a `jobId` to test. Find one via:\n   - `aws logs tail /aws/lambda/voice-insights-dev-submission --since 1h --filter-pattern 'BDA invocation submitted'`\n   - Or upload an audio file with `aws s3 cp clip.wav s3://{{inputBucket}}/samples/clip.wav` and wait ~30-60s.\n\nThe deployed API has no auth — it's open by design for the portfolio demo.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get transcript by jobId",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Accept", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{apiBaseUrl}}/transcripts/{{jobId}}",
+          "host": ["{{apiBaseUrl}}"],
+          "path": ["transcripts", "{{jobId}}"]
+        },
+        "description": "Returns the normalized transcript record for the given jobId.\n\nResponse shape:\n```json\n{\n  \"jobId\": \"...\",\n  \"s3Key\": \"...\",\n  \"language\": \"en\",\n  \"durationMs\": 14961,\n  \"transcript\": \"...\",\n  \"segments\": [{\"speaker\": \"spk_0\", \"startMs\": 120, \"endMs\": 3950, \"text\": \"...\"}],\n  \"topics\": [\"...\"],\n  \"sentiment\": \"neutral\",\n  \"actionItems\": [\"...\"],\n  \"createdAt\": \"2026-05-25T00:29:02.250Z\"\n}\n```"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 200', () => pm.response.to.have.status(200));",
+              "",
+              "pm.test('Body has the canonical fields', () => {",
+              "  const j = pm.response.json();",
+              "  pm.expect(j).to.have.property('jobId').that.is.a('string');",
+              "  pm.expect(j).to.have.property('transcript').that.is.a('string');",
+              "  pm.expect(j).to.have.property('durationMs').that.is.a('number');",
+              "  pm.expect(j).to.have.property('language').that.is.a('string');",
+              "  pm.expect(j).to.have.property('segments').that.is.an('array');",
+              "  pm.expect(j).to.have.property('topics').that.is.an('array');",
+              "  pm.expect(j).to.have.property('actionItems').that.is.an('array');",
+              "  pm.expect(j).to.have.property('createdAt').that.is.a('string');",
+              "});",
+              "",
+              "pm.test('jobId in response matches request', () => {",
+              "  pm.expect(pm.response.json().jobId).to.eql(pm.collectionVariables.get('jobId') || pm.environment.get('jobId'));",
+              "});",
+              "",
+              "pm.test('segments contain timestamp ordering', () => {",
+              "  const segs = pm.response.json().segments;",
+              "  for (let i = 0; i < segs.length; i++) {",
+              "    pm.expect(segs[i].endMs).to.be.at.least(segs[i].startMs);",
+              "    if (i > 0) pm.expect(segs[i].startMs).to.be.at.least(segs[i-1].startMs);",
+              "  }",
+              "});"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "Get transcript (unknown jobId — expect 404)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Accept", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{apiBaseUrl}}/transcripts/nonexistent-job-id-please-fail",
+          "host": ["{{apiBaseUrl}}"],
+          "path": ["transcripts", "nonexistent-job-id-please-fail"]
+        },
+        "description": "Sanity check that an unknown jobId returns a 404 (or whatever the retrieval Lambda returns when DynamoDB has no item)."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 404 (or 4xx)', () => {",
+              "  pm.expect(pm.response.code).to.be.within(400, 499);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "Get transcript (empty jobId — expect 400)",
+      "request": {
+        "method": "GET",
+        "header": [
+          { "key": "Accept", "value": "application/json" }
+        ],
+        "url": {
+          "raw": "{{apiBaseUrl}}/transcripts/",
+          "host": ["{{apiBaseUrl}}"],
+          "path": ["transcripts", ""]
+        },
+        "description": "Calling `GET /transcripts/` matches the `{jobId}` route with an empty value. The retrieval Lambda's Zod schema rejects empty strings, returning 400 `bad_request`."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 400', () => pm.response.to.have.status(400));",
+              "",
+              "pm.test('Error envelope is bad_request', () => {",
+              "  const j = pm.response.json();",
+              "  pm.expect(j).to.have.property('error', 'bad_request');",
+              "  pm.expect(j).to.have.property('message');",
+              "  pm.expect(j).to.have.property('details').that.is.an('array');",
+              "});"
+            ]
+          }
+        }
+      ],
+      "response": []
+    },
+    {
+      "name": "Get transcript (unsupported method — expect 405)",
+      "request": {
+        "method": "POST",
+        "header": [
+          { "key": "Accept", "value": "application/json" }
+        ],
+        "body": { "mode": "raw", "raw": "{}" },
+        "url": {
+          "raw": "{{apiBaseUrl}}/transcripts/{{jobId}}",
+          "host": ["{{apiBaseUrl}}"],
+          "path": ["transcripts", "{{jobId}}"]
+        },
+        "description": "API Gateway should reject methods other than `GET` on the configured route. HTTP API typically returns 404 \"Not Found\" for unmatched method+path combinations."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('Status is 4xx', () => {",
+              "  pm.expect(pm.response.code).to.be.within(400, 499);",
+              "});"
+            ]
+          }
+        }
+      ],
+      "response": []
+    }
+  ],
+  "variable": [
+    {
+      "key": "apiBaseUrl",
+      "value": "https://0uzu3yd8yi.execute-api.us-east-1.amazonaws.com",
+      "type": "string",
+      "description": "Override via the environment file. This default points at the current dev deploy."
+    },
+    {
+      "key": "jobId",
+      "value": "samples-sample-iam-20260524-202205-wav-07a2824a-66c0-45f6-ba02-8099b983609e",
+      "type": "string",
+      "description": "Override via the environment file. This default is the most recent test transcript known to exist."
+    },
+    {
+      "key": "inputBucket",
+      "value": "voice-insights-dev-input-7c0bb856",
+      "type": "string",
+      "description": "S3 bucket to upload audio files into to trigger the pipeline (not used directly by this collection)."
+    }
+  ]
+}

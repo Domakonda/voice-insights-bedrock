@@ -1,0 +1,20 @@
+{
+  "Records": [
+    {
+      "messageId": "norm-msg-1",
+      "receiptHandle": "sample-receipt-handle",
+      "body": "{\"Records\":[{\"eventVersion\":\"2.1\",\"eventSource\":\"aws:s3\",\"awsRegion\":\"us-east-1\",\"eventTime\":\"2026-05-24T12:01:30.000Z\",\"eventName\":\"ObjectCreated:Put\",\"s3\":{\"bucket\":{\"name\":\"voice-insights-dev-output-abc123\"},\"object\":{\"key\":\"transcripts/sample-job-1/0/standard_output/0/result.json\",\"size\":4096}}}]}",
+      "attributes": {
+        "ApproximateReceiveCount": "1",
+        "SentTimestamp": "1748088090000",
+        "SenderId": "AIDAEXAMPLE",
+        "ApproximateFirstReceiveTimestamp": "1748088090000"
+      },
+      "messageAttributes": {},
+      "md5OfBody": "0",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:us-east-1:111122223333:voice-insights-dev-normalization",
+      "awsRegion": "us-east-1"
+    }
+  ]
+}

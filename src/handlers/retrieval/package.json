@@ -1,0 +1,14 @@
+{
+  "name": "@voice-insights/retrieval",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "./src/app.ts",
+  "dependencies": {
+    "@aws-lambda-powertools/logger": "^2.10.0",
+    "@aws-sdk/client-dynamodb": "^3.665.0",
+    "@aws-sdk/lib-dynamodb": "^3.665.0",
+    "@voice-insights/shared": "*",
+    "zod": "^4.0.0"
+  }
+}

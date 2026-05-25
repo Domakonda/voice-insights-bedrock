@@ -1,0 +1,23 @@
+{
+  "metadata": {
+    "asset_id": "sample-job-1",
+    "job_id": "sample-job-1",
+    "s3_uri": "s3://voice-insights-dev-input-abc123/samples/hello.mp3"
+  },
+  "audio": {
+    "duration_millis": 5200,
+    "language": "en",
+    "transcript": {
+      "full_text": "Hello, this is a sample transcript. We discussed quarterly planning and agreed to follow up next week.",
+      "segments": [
+        { "speaker": "spk_0", "start_timestamp_millis": 0, "end_timestamp_millis": 2100, "text": "Hello, this is a sample transcript." },
+        { "speaker": "spk_0", "start_timestamp_millis": 2100, "end_timestamp_millis": 5200, "text": "We discussed quarterly planning and agreed to follow up next week." }
+      ]
+    },
+    "insights": {
+      "topics": ["quarterly planning", "follow-up"],
+      "sentiment": "neutral",
+      "action_items": ["Schedule follow-up next week"]
+    }
+  }
+}

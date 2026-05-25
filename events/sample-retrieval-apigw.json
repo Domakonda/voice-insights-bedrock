@@ -1,0 +1,27 @@
+{
+  "version": "2.0",
+  "routeKey": "GET /transcripts/{jobId}",
+  "rawPath": "/transcripts/sample-job-1",
+  "rawQueryString": "",
+  "headers": { "accept": "application/json" },
+  "requestContext": {
+    "accountId": "111122223333",
+    "apiId": "abc123",
+    "domainName": "abc123.execute-api.us-east-1.amazonaws.com",
+    "domainPrefix": "abc123",
+    "http": {
+      "method": "GET",
+      "path": "/transcripts/sample-job-1",
+      "protocol": "HTTP/1.1",
+      "sourceIp": "127.0.0.1",
+      "userAgent": "curl/8.0"
+    },
+    "requestId": "req-1",
+    "routeKey": "GET /transcripts/{jobId}",
+    "stage": "$default",
+    "time": "24/May/2026:12:02:00 +0000",
+    "timeEpoch": 1748088120000
+  },
+  "pathParameters": { "jobId": "sample-job-1" },
+  "isBase64Encoded": false
+}

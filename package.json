@@ -1,0 +1,40 @@
+{
+  "name": "voice-insights-bedrock",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Serverless voice transcription + insights pipeline on AWS Bedrock Data Automation",
+  "license": "MIT",
+  "author": "Aravind Domakonda",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Domakonda/voice-insights-bedrock.git"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "packageManager": "yarn@1.22.22",
+  "workspaces": [
+    "src/shared",
+    "src/handlers/*"
+  ],
+  "scripts": {
+    "typecheck": "tsc -b",
+    "build": "yarn typecheck && node scripts/build-lambda.mjs",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:api": "newman run postman/voice-insights.postman_collection.json -e postman/voice-insights.postman_environment.json --reporters cli",
+    "clean": "rimraf terraform/dist src/**/*.tsbuildinfo"
+  },
+  "devDependencies": {
+    "@smithy/util-stream": "^3.1.0",
+    "@types/aws-lambda": "^8.10.145",
+    "@types/node": "^20.14.0",
+    "archiver": "^7.0.1",
+    "aws-sdk-client-mock": "^4.1.0",
+    "esbuild": "^0.23.0",
+    "newman": "^6.2.2",
+    "rimraf": "^5.0.10",
+    "typescript": "^5.6.0",
+    "vitest": "^2.1.0"
+  }
+}

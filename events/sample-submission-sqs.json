@@ -1,0 +1,20 @@
+{
+  "Records": [
+    {
+      "messageId": "sample-msg-1",
+      "receiptHandle": "sample-receipt-handle",
+      "body": "{\"Records\":[{\"eventVersion\":\"2.1\",\"eventSource\":\"aws:s3\",\"awsRegion\":\"us-east-1\",\"eventTime\":\"2026-05-24T12:00:00.000Z\",\"eventName\":\"ObjectCreated:Put\",\"s3\":{\"bucket\":{\"name\":\"voice-insights-dev-input-abc123\"},\"object\":{\"key\":\"samples/hello.mp3\",\"size\":204800}}}]}",
+      "attributes": {
+        "ApproximateReceiveCount": "1",
+        "SentTimestamp": "1748088000000",
+        "SenderId": "AIDAEXAMPLE",
+        "ApproximateFirstReceiveTimestamp": "1748088000000"
+      },
+      "messageAttributes": {},
+      "md5OfBody": "0",
+      "eventSource": "aws:sqs",
+      "eventSourceARN": "arn:aws:sqs:us-east-1:111122223333:voice-insights-dev-submission",
+      "awsRegion": "us-east-1"
+    }
+  ]
+}
